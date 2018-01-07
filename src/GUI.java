@@ -3,22 +3,33 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 /**
  *
  * @author HARSHIT
  */
-public class GUI extends javax.swing.JFrame {
-
+public class GUI extends javax.swing.JFrame 
+{
+    static GUI g;
     /**
      * Creates new form GUI
      */
-    public GUI() {
+    public GUI()
+    {
         initComponents();
+        setTitle("File Copier");
         setSize(1000,700);
         setLocationRelativeTo(null);
         fc1.setVisible(false);
         fc2.setVisible(false);
+        
     }
 
     /**
@@ -38,6 +49,7 @@ public class GUI extends javax.swing.JFrame {
         fc1 = new javax.swing.JFileChooser();
         tf1 = new javax.swing.JTextField();
         bt2 = new javax.swing.JButton();
+        bt3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -54,7 +66,7 @@ public class GUI extends javax.swing.JFrame {
                 }
             });
             getContentPane().add(fc2);
-            fc2.setBounds(140, 300, 200, 190);
+            fc2.setBounds(280, 100, 290, 60);
 
             bt1.setText("Click here to choose a file");
             bt1.addActionListener(new java.awt.event.ActionListener() {
@@ -71,7 +83,7 @@ public class GUI extends javax.swing.JFrame {
                 }
             });
             getContentPane().add(tf2);
-            tf2.setBounds(280, 170, 460, 23);
+            tf2.setBounds(280, 170, 460, 30);
 
             lb1.setFont(new java.awt.Font("Georgia", 1, 18)); // NOI18N
             lb1.setText("File to be Copied");
@@ -88,7 +100,7 @@ public class GUI extends javax.swing.JFrame {
             fc1.setCurrentDirectory(new java.io.File("D:\\"));
                 fc1.setDialogTitle("Choose a file to be Copied");
                 getContentPane().add(fc1);
-                fc1.setBounds(420, 330, 180, 150);
+                fc1.setBounds(280, 30, 190, 30);
 
                 tf1.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -96,7 +108,7 @@ public class GUI extends javax.swing.JFrame {
                     }
                 });
                 getContentPane().add(tf1);
-                tf1.setBounds(280, 60, 460, 23);
+                tf1.setBounds(280, 60, 460, 30);
 
                 bt2.setText("Choose desination");
                 bt2.addActionListener(new java.awt.event.ActionListener() {
@@ -106,6 +118,16 @@ public class GUI extends javax.swing.JFrame {
                 });
                 getContentPane().add(bt2);
                 bt2.setBounds(60, 170, 120, 23);
+
+                bt3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+                bt3.setText("Start Copy");
+                bt3.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        bt3ActionPerformed(evt);
+                    }
+                });
+                getContentPane().add(bt3);
+                bt3.setBounds(290, 250, 230, 60);
 
                 pack();
             }// </editor-fold>//GEN-END:initComponents
@@ -142,6 +164,54 @@ public class GUI extends javax.swing.JFrame {
             tf2.setText(fc2.getSelectedFile().getAbsolutePath());
         }
     }//GEN-LAST:event_bt2ActionPerformed
+    class thread implements Runnable
+    {
+        thread()
+        {
+            
+            Thread T = new Thread(this);
+            T.start();
+        }
+        @Override
+        public void run() 
+        {
+            File f1 = new File(tf1.getText());
+            File f2 = new File(tf2.getText());
+            if(f1.isFile() && f2.isDirectory())
+            {
+                try 
+                {
+                    String name = f1.getName();
+                    String path = f2.getAbsolutePath();
+                    String newfile = path+ "\\" + name;
+                    FileOutputStream fos = new FileOutputStream(newfile);
+                    FileInputStream fis = new FileInputStream(f1);
+                    
+                    while(fis.available()>0)
+                    {
+                        fos.write(fis.read());
+                    }
+                }
+                catch (FileNotFoundException ex) 
+                {
+                    ex.printStackTrace();
+                } 
+                catch (IOException ex) 
+                {
+                    ex.printStackTrace();
+                }
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(g,"Please choose files correctly");
+            }
+        }
+        
+    }
+    private void bt3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt3ActionPerformed
+        // TODO add your handling code here:
+        new thread();
+    }//GEN-LAST:event_bt3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -171,9 +241,12 @@ public class GUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GUI().setVisible(true);
+        java.awt.EventQueue.invokeLater(new Runnable() 
+        {
+            public void run()
+            {
+               g = new GUI();
+               g.setVisible(true);
             }
         });
     }
@@ -181,6 +254,7 @@ public class GUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bt1;
     private javax.swing.JButton bt2;
+    private javax.swing.JButton bt3;
     private javax.swing.JFileChooser fc1;
     private javax.swing.JFileChooser fc2;
     private javax.swing.JLabel jLabel1;
