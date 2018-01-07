@@ -29,7 +29,7 @@ public class GUI extends javax.swing.JFrame
         setLocationRelativeTo(null);
         fc1.setVisible(false);
         fc2.setVisible(false);
-        
+        pb.setVisible(false);
     }
 
     /**
@@ -50,6 +50,7 @@ public class GUI extends javax.swing.JFrame
         tf1 = new javax.swing.JTextField();
         bt2 = new javax.swing.JButton();
         bt3 = new javax.swing.JButton();
+        pb = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -127,7 +128,11 @@ public class GUI extends javax.swing.JFrame
                     }
                 });
                 getContentPane().add(bt3);
-                bt3.setBounds(290, 250, 230, 60);
+                bt3.setBounds(280, 350, 230, 60);
+
+                pb.setStringPainted(true);
+                getContentPane().add(pb);
+                pb.setBounds(140, 250, 520, 50);
 
                 pack();
             }// </editor-fold>//GEN-END:initComponents
@@ -186,10 +191,18 @@ public class GUI extends javax.swing.JFrame
                     String newfile = path+ "\\" + name;
                     FileOutputStream fos = new FileOutputStream(newfile);
                     FileInputStream fis = new FileInputStream(f1);
-                    
-                    while(fis.available()>0)
+                    int bar = 0 ;
+                    long increment = f1.length()/100;
+                    pb.setVisible(true);
+                    while(fis.available()!=0)
                     {
-                        fos.write(fis.read());
+                        if(fis.available()%increment==0)
+                        {
+                            bar++;
+                            pb.setValue(bar) ;
+                            Thread.sleep(500) ;
+                        }
+                        fos.write(fis.read());                        
                     }
                 }
                 catch (FileNotFoundException ex) 
@@ -199,6 +212,8 @@ public class GUI extends javax.swing.JFrame
                 catch (IOException ex) 
                 {
                     ex.printStackTrace();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             else
@@ -259,6 +274,7 @@ public class GUI extends javax.swing.JFrame
     private javax.swing.JFileChooser fc2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lb1;
+    private javax.swing.JProgressBar pb;
     private javax.swing.JTextField tf1;
     private javax.swing.JTextField tf2;
     // End of variables declaration//GEN-END:variables
